@@ -104,6 +104,7 @@ class Fstab:
 		self.options     = options
 		self.dump		 = dump
 		self.passF       = passF
+		
 
 		if (self.find(self.mount_point) == 0 and self.find(self.device_spec) == 0):
 			fstab.write("{}       {}  {}     {}       {}       {}\n".format(self.device_spec,self.mount_point,self.fs_type,self.options,self.dump,self.passF))
@@ -118,10 +119,12 @@ class Fstab:
 	def get_line_number(self,phrase):													
 		self.phrase = phrase
 		self.file_name = self.file
-
+		print(self.file_name)
 		with open(self.file_name) as f:
 			for i, line in enumerate (f,1):
-				if self.phrase in line:
+				
+				if self.phrase in re.sub('[\t]',' ',line):
+
 					return i
 
 	def RmMountpoint(self,dev_or_mount):
@@ -130,6 +133,7 @@ class Fstab:
 		if (self.find(self.dev_or_mount) != 0):
 
 			line_number = self.get_line_number(self.dev_or_mount + " ")
+			print(line_number)
 			command = os.popen("sed -i '{}d' {}".format(line_number,self.file))
 			command.read()
 			command.close()
@@ -138,3 +142,4 @@ class Fstab:
 		else:
 			print('erorr')
 			return 1 
+
